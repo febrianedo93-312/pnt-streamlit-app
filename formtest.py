@@ -139,6 +139,30 @@ label {
     font-weight: 600;
 }
 
+/* Submit button */
+.stButton > button {
+    background-color: #00796b !important;
+    color: white !important;
+    border-radius: 10px;
+    height: 48px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 700 !important;
+    border: none !important;
+}
+
+/* Submit hover */
+.stButton > button:hover {
+    background-color: #004d40 !important;
+    color: white !important;
+}
+
+/* Dialog button */
+[data-testid="stDialog"] button {
+    color: white !important;
+    font-weight: 700 !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
