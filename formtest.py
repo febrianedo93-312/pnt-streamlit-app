@@ -6,6 +6,10 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import cloudinary
 import cloudinary.uploader
+from streamlit.components.v1 import html
+from PIL import Image
+from PIL.ExifTags import TAGS, GPSTAGS
+from datetime import datetime
 
 # =====================================
 # PAGE CONFIG
@@ -253,6 +257,28 @@ def upload_to_drive(uploaded_file):
     return result["secure_url"]    
 
 # =====================================
+# GET IMAGE EXIF
+# =====================================
+def get_exif_data(uploaded_file):
+
+    image = Image.open(uploaded_file)
+
+    exif_data = image._getexif()
+
+    if not exif_data:
+        return None
+
+    exif = {}
+
+    for tag_id, value in exif_data.items():
+
+        tag = TAGS.get(tag_id, tag_id)
+
+        exif[tag] = value
+
+    return exif
+    
+# =====================================
 # FORM RESET KEY
 # =====================================
 if "form_key" not in st.session_state:
@@ -402,12 +428,27 @@ st.info(
     "Pastikan papan nama toko terlihat jelas pada foto."
 )
 
-bukti = st.file_uploader(
-    "Ambil / Upload Foto Pemasangan",
-    type=["jpg", "jpeg", "png"],
-    key=f"bukti_{st.session_state.form_key}",
-    accept_multiple_files=False
-)
+html("""
+<div style="margin-top:20px;">
+    <label style="
+        background-color:#009688;
+        color:white;
+        padding:12px 20px;
+        border-radius:10px;
+        cursor:pointer;
+        font-weight:700;
+        display:inline-block;
+    ">
+        📷 Ambil Foto Pemasangan
+        <input 
+            type="file" 
+            accept="image/*"
+            capture="environment"
+            style="display:none;"
+        >
+    </label>
+</div>
+""", height=80)
 
 # =====================================
 # SUBMIT BUTTON
@@ -426,9 +467,24 @@ if st.button("Submit"):
     elif bukti is None:
 
         st.error("Bukti pemasangan wajib diupload.")
-
+        
     else:
 
+        # =====================================
+        # CHECK EXIF
+        # =====================================
+        exif = get_exif_data(bukti)
+
+        if exif is None:
+
+            st.error(
+                "Foto tidak memiliki metadata EXIF. "
+                "Gunakan kamera HP langsung."
+            )
+
+            st.stop()
+
+  
         with st.spinner("Menyimpan data..."):
 
             try:
