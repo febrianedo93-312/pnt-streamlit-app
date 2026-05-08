@@ -234,7 +234,8 @@ def upload_to_drive(uploaded_file):
     file = service.files().create(
         body=file_metadata,
         media_body=media,
-        fields='id'
+        fields='id',
+        supportsAllDrives=True
     ).execute()
 
     file_id = file.get('id')
@@ -246,6 +247,7 @@ def upload_to_drive(uploaded_file):
             'type': 'anyone',
             'role': 'reader'
         }
+        supportsAllDrives=True
     ).execute()
 
     link_file = f"https://drive.google.com/file/d/{file_id}/view"
