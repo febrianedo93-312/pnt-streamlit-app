@@ -1,15 +1,17 @@
 import streamlit as st
 import pandas as pd
-from datetime import date
-from io import BytesIO
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 import cloudinary
 import cloudinary.uploader
-from streamlit.components.v1 import html
-from PIL import Image
-from PIL.ExifTags import TAGS, GPSTAGS
+
+from datetime import date
 from datetime import datetime
+
+from oauth2client.service_account import ServiceAccountCredentials
+
+from PIL import Image
+from PIL.ExifTags import TAGS
+
 
 # =====================================
 # PAGE CONFIG
@@ -18,6 +20,7 @@ st.set_page_config(
     page_title="PNT Form",
     layout="centered"
 )
+
 
 # =====================================
 # CLOUDINARY CONFIG
@@ -28,18 +31,19 @@ cloudinary.config(
     api_secret=st.secrets["cloudinary"]["api_secret"]
 )
 
+
 # =====================================
-# CUSTOM UI
+# CUSTOM CSS
 # =====================================
 st.markdown("""
 <style>
 
-/* Background utama */
+/* Main background */
 .stApp {
     background-color: #f3f4f6;
 }
 
-/* Container form */
+/* Main container */
 .block-container {
     background-color: white;
     padding: 2.5rem;
@@ -48,31 +52,27 @@ st.markdown("""
     max-width: 850px;
 }
 
-/* Judul */
+/* Title */
 h1 {
     color: #111827 !important;
     font-weight: 700 !important;
 }
 
-/* Sub heading */
-h2, h3, h4, h5, h6 {
-    color: #111827 !important;
-}
-
-/* Paragraph */
+/* Text */
 p {
     color: #6b7280;
 }
 
-/* Label field */
+/* Label */
 label {
     color: #374151 !important;
     font-weight: 700 !important;
     font-size: 15px !important;
 }
 
-/* Text input */
-.stTextInput input {
+/* Input */
+.stTextInput input,
+.stDateInput input {
     background-color: white !important;
     color: #111827 !important;
     border: 1px solid #d1d5db !important;
@@ -86,21 +86,11 @@ label {
     border-radius: 10px !important;
 }
 
-/* Date input */
-.stDateInput input {
-    background-color: white !important;
-    color: #111827 !important;
-    border-radius: 10px !important;
-}
-
-/* Disabled autofill */
+/* Disabled input */
 .stTextInput input:disabled {
-
     -webkit-text-fill-color: #111827 !important;
     color: #111827 !important;
-
     background-color: #eef2f7 !important;
-
     opacity: 1 !important;
 }
 
@@ -114,40 +104,14 @@ label {
     font-size: 16px;
     font-weight: 700;
     border: none;
-    transition: 0.3s;
 }
 
-/* Submit button text */
-.stButton > button p {
-    color: white !important;
-    font-weight: 700 !important;
-}
-
-/* Hover button */
+/* Submit hover */
 .stButton > button:hover {
     background-color: #00796b;
-    color: white !important;
 }
 
 /* File uploader */
-[data-testid="stFileUploader"] {
-    background-color: white;
-    border-radius: 12px;
-    border: 1px dashed #cbd5e1;
-    padding: 1rem;
-}
-
-/* Dialog popup */
-[data-testid="stDialog"] {
-    border-radius: 18px;
-}
-
-/* Spinner */
-[data-testid="stSpinner"] {
-    color: #009688 !important;
-}
-
-/* File uploader modern */
 [data-testid="stFileUploader"] {
     background-color: white;
     border-radius: 14px;
@@ -178,25 +142,26 @@ label {
 </style>
 """, unsafe_allow_html=True)
 
+
 # =====================================
 # GOOGLE SHEET MASTER DATA
 # =====================================
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1JZ5L-witlH_9E5ehJIMsRlXzrtP0BWXeg-qkFsx3XuE/export?format=csv"
 
-# =====================================
-# GOOGLE DRIVE FOLDER ID
-# =====================================
-FOLDER_ID = "1U18yrzWhEeOqr_TdqLY9JbD-4y3Bqnfv"
 
 # =====================================
 # LOAD MASTER DATA
 # =====================================
 @st.cache_data(ttl=300)
 def load_master_data():
+
     df = pd.read_csv(SHEET_URL)
+
     return df.fillna("")
 
+
 df_master = load_master_data()
+
 
 # =====================================
 # CONNECT GOOGLE SHEET
@@ -211,13 +176,13 @@ def connect_gsheet():
 
     try:
 
-        # STREAMLIT CLOUDs
+        # STREAMLIT CLOUD
         creds = ServiceAccountCredentials.from_json_keyfile_dict(
             st.secrets["gcp_service_account"],
             scope
         )
 
-    except Exception:
+    except:
 
         # LOCAL PC
         creds = ServiceAccountCredentials.from_json_keyfile_name(
@@ -228,6 +193,8 @@ def connect_gsheet():
     client = gspread.authorize(creds)
 
     return client
+
+
 # =====================================
 # OPEN RESULT SHEET
 # =====================================
@@ -238,51 +205,58 @@ def open_result_sheet():
 
     return client_sheet.open("Hasil PNT").sheet1
 
+
 sheet_hasil = open_result_sheet()
 
-# =====================================
-# GOOGLE DRIVE AUTH
-# =====================================
 
 # =====================================
-# UPLOAD FILE TO CLOUDINARY
+# UPLOAD TO CLOUDINARY
 # =====================================
-def upload_to_drive(uploaded_file):
+def upload_to_cloudinary(uploaded_file):
 
     result = cloudinary.uploader.upload(
         uploaded_file,
         folder="PNT_UPLOAD"
     )
 
-    return result["secure_url"]    
+    return result["secure_url"]
+
 
 # =====================================
-# GET IMAGE EXIF
+# GET EXIF DATA
 # =====================================
 def get_exif_data(uploaded_file):
 
-    image = Image.open(uploaded_file)
+    try:
 
-    exif_data = image._getexif()
+        image = Image.open(uploaded_file)
 
-    if not exif_data:
+        exif_data = image._getexif()
+
+        if not exif_data:
+            return None
+
+        exif = {}
+
+        for tag_id, value in exif_data.items():
+
+            tag = TAGS.get(tag_id, tag_id)
+
+            exif[tag] = value
+
+        return exif
+
+    except:
+
         return None
 
-    exif = {}
 
-    for tag_id, value in exif_data.items():
-
-        tag = TAGS.get(tag_id, tag_id)
-
-        exif[tag] = value
-
-    return exif
-    
 # =====================================
 # FORM RESET KEY
 # =====================================
 if "form_key" not in st.session_state:
     st.session_state.form_key = 0
+
 
 # =====================================
 # SUCCESS DIALOG
@@ -290,34 +264,15 @@ if "form_key" not in st.session_state:
 @st.dialog("Notifikasi")
 def success_dialog():
 
+    st.success("✅ Data berhasil disimpan!")
+
     st.markdown("""
     <div style="
-        background-color:#16a34a;
-        padding:14px;
-        border-radius:10px;
-        color:white;
-        font-weight:700;
+        color:#111827;
         font-size:16px;
-        margin-bottom:20px;
-    ">
-    ✅ Data berhasil disimpan!
-    </div>
-
-    <div style="
-        color:white;
-        font-size:18px;
-        font-weight:700;
-        margin-bottom:10px;
+        margin-top:10px;
     ">
     Data PNT berhasil direcord ke sistem.
-    </div>
-
-    <div style="
-        color:#d1d5db;
-        font-size:15px;
-        margin-bottom:20px;
-    ">
-    Silakan lanjutkan input toko berikutnya.
     </div>
     """, unsafe_allow_html=True)
 
@@ -327,6 +282,7 @@ def success_dialog():
 
         st.rerun()
 
+
 # =====================================
 # TITLE
 # =====================================
@@ -335,6 +291,7 @@ st.markdown("""
 
 Silakan isi data pemasangan papan nama toko dengan lengkap dan benar.
 """)
+
 
 # =====================================
 # SELECT ID TOKO
@@ -346,6 +303,7 @@ id_toko = st.selectbox(
     list_toko,
     key=f"id_toko_{st.session_state.form_key}"
 )
+
 
 # =====================================
 # GET STORE DATA
@@ -371,6 +329,7 @@ else:
     dist1 = ""
     dist2 = ""
     dist3 = ""
+
 
 # =====================================
 # AUTO FILL
@@ -408,8 +367,8 @@ st.text_input(
 st.text_input(
     "Nama Distributor 3",
     value=dist3,
-    disabled=True
-)
+    disabled=True)
+
 
 # =====================================
 # USER INPUT
@@ -425,30 +384,16 @@ tanggal = st.date_input(
 )
 
 st.info(
-    "Pastikan papan nama toko terlihat jelas pada foto."
+    "Gunakan kamera HP langsung saat mengambil foto pemasangan."
 )
 
-html("""
-<div style="margin-top:20px;">
-    <label style="
-        background-color:#009688;
-        color:white;
-        padding:12px 20px;
-        border-radius:10px;
-        cursor:pointer;
-        font-weight:700;
-        display:inline-block;
-    ">
-        📷 Ambil Foto Pemasangan
-        <input 
-            type="file" 
-            accept="image/*"
-            capture="environment"
-            style="display:none;"
-        >
-    </label>
-</div>
-""", height=80)
+bukti = st.file_uploader(
+    "Ambil Foto Pemasangan",
+    type=["jpg", "jpeg", "png"],
+    key=f"bukti_{st.session_state.form_key}",
+    accept_multiple_files=False
+)
+
 
 # =====================================
 # SUBMIT BUTTON
@@ -467,7 +412,7 @@ if st.button("Submit"):
     elif bukti is None:
 
         st.error("Bukti pemasangan wajib diupload.")
-        
+
     else:
 
         # =====================================
@@ -484,19 +429,49 @@ if st.button("Submit"):
 
             st.stop()
 
-  
+        # =====================================
+        # CHECK PHOTO TIME
+        # =====================================
+        photo_time = exif.get("DateTime")
+
+        if photo_time:
+
+            try:
+
+                photo_datetime = datetime.strptime(
+                    photo_time,
+                    "%Y:%m:%d %H:%M:%S"
+                )
+
+                now = datetime.now()
+
+                diff_minutes = (
+                    now - photo_datetime
+                ).total_seconds() / 60
+
+                if diff_minutes > 10:
+
+                    st.error(
+                        "Foto terlalu lama. "
+                        "Ambil foto maksimal 10 menit terakhir."
+                    )
+
+                    st.stop()
+
+            except:
+                pass
+
+        # =====================================
+        # SAVE PROCESS
+        # =====================================
         with st.spinner("Menyimpan data..."):
 
             try:
 
-                # =====================================
                 # UPLOAD FILE
-                # =====================================
-                link_file = upload_to_drive(bukti)
+                link_file = upload_to_cloudinary(bukti)
 
-                # =====================================
-                # SAVE TO GOOGLE SHEET
-                # =====================================
+                # SAVE GOOGLE SHEET
                 sheet_hasil.append_row([
                     str(id_toko),
                     str(nama_toko),
@@ -510,9 +485,7 @@ if st.button("Submit"):
                     str(link_file)
                 ])
 
-                # =====================================
-                # SHOW SUCCESS DIALOG
-                # =====================================
+                # SUCCESS
                 success_dialog()
 
             except Exception as e:
