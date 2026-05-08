@@ -214,6 +214,9 @@ sheet_hasil = open_result_sheet()
 # =====================================
 def upload_to_cloudinary(uploaded_file):
 
+    # RESET FILE POINTER
+    uploaded_file.seek(0)
+
     result = cloudinary.uploader.upload(
         uploaded_file,
         folder="PNT_UPLOAD"
