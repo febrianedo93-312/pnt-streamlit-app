@@ -4,9 +4,8 @@ from datetime import date
 from io import BytesIO
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from google.oauth2.service_account import Credentials
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload
+import cloudinary
+import cloudinary.uploader
 
 # =====================================
 # PAGE CONFIG
@@ -14,6 +13,15 @@ from googleapiclient.http import MediaIoBaseUpload
 st.set_page_config(
     page_title="PNT Form",
     layout="centered"
+)
+
+# =====================================
+# CLOUDINARY CONFIG
+# =====================================
+cloudinary.config(
+    cloud_name=st.secrets["cloudinary"]["cloud_name"],
+    api_key=st.secrets["cloudinary"]["api_key"],
+    api_secret=st.secrets["cloudinary"]["api_secret"]
 )
 
 # =====================================
@@ -204,55 +212,17 @@ sheet_hasil = open_result_sheet()
 # GOOGLE DRIVE AUTH
 # =====================================
 
-    
 # =====================================
-# UPLOAD FILE TO GOOGLE DRIVE
+# UPLOAD FILE TO CLOUDINARY
 # =====================================
 def upload_to_drive(uploaded_file):
 
-    SCOPES = ['https://www.googleapis.com/auth/drive']
-
-    creds = Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"],
-        scopes=SCOPES
+    result = cloudinary.uploader.upload(
+        uploaded_file,
+        folder="PNT_UPLOAD"
     )
 
-    service = build('drive', 'v3', credentials=creds)
-
-    file_stream = BytesIO(uploaded_file.getvalue())
-
-    file_metadata = {
-        'name': uploaded_file.name,
-        'parents': [FOLDER_ID]
-    }
-
-    media = MediaIoBaseUpload(
-        file_stream,
-        mimetype=uploaded_file.type
-    )
-
-    file = service.files().create(
-        body=file_metadata,
-        media_body=media,
-        fields='id',
-        supportsAllDrives=True
-    ).execute()
-
-    file_id = file.get('id')
-
-    # PUBLIC ACCESS
-    service.permissions().create(
-        fileId=file_id,
-        body={
-            'type': 'anyone',
-            'role': 'reader'
-        },
-        supportsAllDrives=True
-    ).execute()
-
-    link_file = f"https://drive.google.com/file/d/{file_id}/view"
-
-    return link_file
+    return result["secure_url"]    
 
 # =====================================
 # FORM RESET KEY
