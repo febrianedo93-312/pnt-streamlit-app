@@ -1,11 +1,12 @@
 import streamlit as st
 import pandas as pd
 from datetime import date
-from pydrive2.auth import GoogleAuth
-from pydrive2.drive import GoogleDrive
 from io import BytesIO
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseUpload
 
 # =====================================
 # PAGE CONFIG
@@ -202,62 +203,54 @@ sheet_hasil = open_result_sheet()
 # =====================================
 # GOOGLE DRIVE AUTH
 # =====================================
-@st.cache_resource
-def authenticate_drive():
 
-    gauth = GoogleAuth()
-
-    # =====================================
-    # LOAD EXISTING CREDENTIAL
-    # =====================================
-    gauth.LoadCredentialsFile("credentials.json")
-
-    # =====================================
-    # FIRST LOGIN
-    # =====================================
-    if gauth.credentials is None:
-
-        gauth.LocalWebserverAuth()
-
-        gauth.SaveCredentialsFile("credentials.json")
-
-    # =====================================
-    # TOKEN EXPIRED
-    # =====================================
-    elif gauth.access_token_expired:
-
-        gauth.Refresh()
-
-        gauth.SaveCredentialsFile("credentials.json")
-
-    # =====================================
-    # TOKEN VALID
-    # =====================================
-    else:
-
-        gauth.Authorize()
-
-    return GoogleDrive(gauth)
     
 # =====================================
 # UPLOAD FILE TO GOOGLE DRIVE
 # =====================================
 def upload_to_drive(uploaded_file):
 
-    drive = authenticate_drive()
+    SCOPES = ['https://www.googleapis.com/auth/drive']
+
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=SCOPES
+    )
+
+    service = build('drive', 'v3', credentials=creds)
 
     file_stream = BytesIO(uploaded_file.getvalue())
 
-    file_drive = drive.CreateFile({
-        'title': uploaded_file.name,
-        'parents': [{'id': FOLDER_ID}]
-    })
+    file_metadata = {
+        'name': uploaded_file.name,
+        'parents': [FOLDER_ID]
+    }
 
-    file_drive.content = file_stream
+    media = MediaIoBaseUpload(
+        file_stream,
+        mimetype=uploaded_file.type
+    )
 
-    file_drive.Upload()
+    file = service.files().create(
+        body=file_metadata,
+        media_body=media,
+        fields='id'
+    ).execute()
 
-    return file_drive['alternateLink']
+    file_id = file.get('id')
+
+    # PUBLIC ACCESS
+    service.permissions().create(
+        fileId=file_id,
+        body={
+            'type': 'anyone',
+            'role': 'reader'
+        }
+    ).execute()
+
+    link_file = f"https://drive.google.com/file/d/{file_id}/view"
+
+    return link_file
 
 # =====================================
 # FORM RESET KEY
