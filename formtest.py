@@ -38,12 +38,12 @@ cloudinary.config(
 st.markdown("""
 <style>
 
-/* Main background */
+/* Background utama */
 .stApp {
     background-color: #f3f4f6;
 }
 
-/* Main container */
+/* Container form */
 .block-container {
     background-color: white;
     padding: 2.5rem;
@@ -52,27 +52,31 @@ st.markdown("""
     max-width: 850px;
 }
 
-/* Title */
+/* Judul */
 h1 {
     color: #111827 !important;
     font-weight: 700 !important;
 }
 
-/* Text */
+/* Sub heading */
+h2, h3, h4, h5, h6 {
+    color: #111827 !important;
+}
+
+/* Paragraph */
 p {
     color: #6b7280;
 }
 
-/* Label */
+/* Label field */
 label {
     color: #374151 !important;
     font-weight: 700 !important;
     font-size: 15px !important;
 }
 
-/* Input */
-.stTextInput input,
-.stDateInput input {
+/* Text input */
+.stTextInput input {
     background-color: white !important;
     color: #111827 !important;
     border: 1px solid #d1d5db !important;
@@ -86,11 +90,21 @@ label {
     border-radius: 10px !important;
 }
 
-/* Disabled input */
+/* Date input */
+.stDateInput input {
+    background-color: white !important;
+    color: #111827 !important;
+    border-radius: 10px !important;
+}
+
+/* Disabled autofill */
 .stTextInput input:disabled {
+
     -webkit-text-fill-color: #111827 !important;
     color: #111827 !important;
+
     background-color: #eef2f7 !important;
+
     opacity: 1 !important;
 }
 
@@ -104,64 +118,39 @@ label {
     font-size: 16px;
     font-weight: 700;
     border: none;
+    transition: 0.3s;
 }
 
-/* Submit hover */
+/* Submit button text */
+.stButton > button p {
+    color: white !important;
+    font-weight: 700 !important;
+}
+
+/* Hover button */
 .stButton > button:hover {
     background-color: #00796b;
+    color: white !important;
 }
 
 /* File uploader */
 [data-testid="stFileUploader"] {
     background-color: white;
-    border-radius: 14px;
-    border: 2px dashed #009688;
-    padding: 1.2rem;
+    border-radius: 12px;
+    border: 1px dashed #cbd5e1;
+    padding: 1rem;
 }
 
-/* Upload button */
-[data-testid="stFileUploader"] section button {
-    background-color: #009688 !important;
-    color: white !important;
-    border-radius: 10px !important;
-    font-weight: 700 !important;
-    border: none !important;
+/* Dialog popup */
+[data-testid="stDialog"] {
+    border-radius: 18px;
 }
 
-/* Upload button hover */
-[data-testid="stFileUploader"] section button:hover {
-    background-color: #00796b !important;
+/* Spinner */
+[data-testid="stSpinner"] {
+    color: #009688 !important;
 }
 
-/* Uploaded filename */
-[data-testid="stFileUploaderFileName"] {
-    color: #111827 !important;
-    font-weight: 600;
-}
-
-/* Submit button */
-.stButton > button {
-    background-color: #00796b !important;
-    color: white !important;
-    border-radius: 10px;
-    height: 48px;
-    width: 100%;
-    font-size: 16px;
-    font-weight: 700 !important;
-    border: none !important;
-}
-
-/* Submit hover */
-.stButton > button:hover {
-    background-color: #004d40 !important;
-    color: white !important;
-}
-
-/* Dialog button */
-[data-testid="stDialog"] button {
-    color: white !important;
-    font-weight: 700 !important;
-}
 
 </style>
 """, unsafe_allow_html=True)
