@@ -246,7 +246,7 @@ def upload_to_drive(uploaded_file):
         body={
             'type': 'anyone',
             'role': 'reader'
-        }
+        },
         supportsAllDrives=True
     ).execute()
 
