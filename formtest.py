@@ -143,6 +143,34 @@ label {
     color: #009688 !important;
 }
 
+/* File uploader modern */
+[data-testid="stFileUploader"] {
+    background-color: white;
+    border-radius: 14px;
+    border: 2px dashed #009688;
+    padding: 1.2rem;
+}
+
+/* Upload button */
+[data-testid="stFileUploader"] section button {
+    background-color: #009688 !important;
+    color: white !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    border: none !important;
+}
+
+/* Upload button hover */
+[data-testid="stFileUploader"] section button:hover {
+    background-color: #00796b !important;
+}
+
+/* Uploaded filename */
+[data-testid="stFileUploaderFileName"] {
+    color: #111827 !important;
+    font-weight: 600;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -374,9 +402,11 @@ st.info(
     "Pastikan papan nama toko terlihat jelas pada foto."
 )
 
-bukti = st.camera_input(
-    "Ambil Foto Pemasangan",
-    key=f"bukti_{st.session_state.form_key}"
+bukti = st.file_uploader(
+    "Ambil / Upload Foto Pemasangan",
+    type=["jpg", "jpeg", "png"],
+    key=f"bukti_{st.session_state.form_key}",
+    accept_multiple_files=False
 )
 
 # =====================================
