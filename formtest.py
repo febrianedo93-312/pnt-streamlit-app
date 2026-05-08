@@ -370,9 +370,12 @@ tanggal = st.date_input(
     value=date.today()
 )
 
-bukti = st.file_uploader(
-    "Bukti Pemasangan",
-    type=["jpg", "jpeg", "png", "pdf"],
+st.info(
+    "Pastikan papan nama toko terlihat jelas pada foto."
+)
+
+bukti = st.camera_input(
+    "Ambil Foto Pemasangan",
     key=f"bukti_{st.session_state.form_key}"
 )
 
