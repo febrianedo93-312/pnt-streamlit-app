@@ -358,19 +358,17 @@ location = streamlit_js_eval(
 
 latitude = ""
 longitude = ""
+koordinat = ""
+jarak_selisih = ""
 
 if location:
 
     latitude = location.get("latitude", "")
     longitude = location.get("longitude", "")
-    
+
     koordinat = f"{latitude}, {longitude}"
-    
-    else:
-    
-        Koordinat = ""
-    
-    jarak_selisih = ""
+
+
 # =====================================
 # SELECT ID TOKO
 # =====================================
@@ -387,6 +385,7 @@ selected_toko = st.selectbox(
     list_toko,
     key=f"id_toko_{st.session_state.form_key}"
 )
+
 
 # =====================================
 # GET STORE DATA
@@ -405,12 +404,13 @@ if selected_toko != "":
     dist1 = data_toko["Distributor 1"]
     dist2 = data_toko["Distributor 2"]
     dist3 = data_toko["Distributor 3"]
-    
+
+    # MASTER KOORDINAT TOKO
     master_lat = float(data_toko["Latitude"])
     master_lon = float(data_toko["Longitude"])
-    
+
     koordinat_toko = f"{master_lat}, {master_lon}"
-    
+
     # =====================================
     # CALCULATE DISTANCE
     # =====================================
@@ -431,16 +431,21 @@ if selected_toko != "":
 
 else:
 
+    id_toko = ""
+
     nama_toko = ""
     alamat = ""
     distrik = ""
     dist1 = ""
     dist2 = ""
     dist3 = ""
-    koordinat_toko = ""
-    
+
     master_lat = 0
     master_lon = 0
+
+    koordinat_toko = ""
+
+    jarak_selisih = ""
 
 
 
@@ -480,19 +485,16 @@ st.text_input(
 st.text_input(
     "Nama Distributor 3",
     value=dist3,
-    disabled=True)
-    
-st.text_input(
-    "Latitude Toko",
-    value=str(master_lat),
     disabled=True
 )
 
 st.text_input(
-    "Longitude Toko",
-    value=str(master_lon),
+    "Koordinat Toko",
+    value=koordinat_toko,
     disabled=True
 )
+
+
 
 
 # =====================================
@@ -527,6 +529,7 @@ st.text_input(
     value=koordinat,
     disabled=True
 )
+
 
 # =====================================
 # SUBMIT BUTTON
