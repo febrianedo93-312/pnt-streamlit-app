@@ -7,3 +7,4 @@ google-auth
 cloudinary
 Pillow
 exifread
+streamlit-js-eval
