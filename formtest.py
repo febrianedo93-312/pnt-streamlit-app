@@ -14,6 +14,8 @@ from PIL.ExifTags import TAGS
 
 from streamlit_js_eval import streamlit_js_eval
 
+from math import radians, sin, cos, sqrt, atan2
+
 
 # =====================================
 # PAGE CONFIG
@@ -268,7 +270,29 @@ def get_exif_data(uploaded_file):
 
         return None
 
+# =====================================
+# CALCULATE DISTANCE
+# =====================================
+def calculate_distance(lat1, lon1, lat2, lon2):
 
+    R = 6371000  # meter
+
+    dlat = radians(lat2 - lat1)
+    dlon = radians(lon2 - lon1)
+
+    a = (
+        sin(dlat / 2) ** 2
+        + cos(radians(lat1))
+        * cos(radians(lat2))
+        * sin(dlon / 2) ** 2
+    )
+
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    distance = R * c
+
+    return round(distance, 2)
+    
 # =====================================
 # FORM RESET KEY
 # =====================================
@@ -342,6 +366,11 @@ if location:
     
     koordinat = f"{latitude}, {longitude}"
     
+    else:
+    
+        Koordinat = ""
+    
+    jarak_selisih = ""
 # =====================================
 # SELECT ID TOKO
 # =====================================
@@ -376,6 +405,29 @@ if selected_toko != "":
     dist1 = data_toko["Distributor 1"]
     dist2 = data_toko["Distributor 2"]
     dist3 = data_toko["Distributor 3"]
+    
+    master_lat = float(data_toko["Latitude"])
+    master_lon = float(data_toko["Longitude"])
+    
+    koordinat_toko = f"{master_lat}, {master_lon}"
+    
+    # =====================================
+    # CALCULATE DISTANCE
+    # =====================================
+    if latitude and longitude:
+
+        try:
+
+            jarak_selisih = calculate_distance(
+                master_lat,
+                master_lon,
+                float(latitude),
+                float(longitude)
+            )
+
+        except:
+
+            jarak_selisih = ""
 
 else:
 
@@ -385,6 +437,11 @@ else:
     dist1 = ""
     dist2 = ""
     dist3 = ""
+    koordinat_toko = ""
+    
+    master_lat = 0
+    master_lon = 0
+
 
 
 # =====================================
@@ -424,6 +481,18 @@ st.text_input(
     "Nama Distributor 3",
     value=dist3,
     disabled=True)
+    
+st.text_input(
+    "Latitude Toko",
+    value=str(master_lat),
+    disabled=True
+)
+
+st.text_input(
+    "Longitude Toko",
+    value=str(master_lon),
+    disabled=True
+)
 
 
 # =====================================
@@ -546,7 +615,9 @@ if st.button("Submit"):
                     str(dist3),
                     str(tso),
                     str(tanggal),
+                    str(koordinat_toko),
                     str(koordinat),
+                    str(jarak_selisih),
                     str(link_file)
                 ])
 
