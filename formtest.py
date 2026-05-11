@@ -12,6 +12,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 from PIL import Image
 from PIL.ExifTags import TAGS
 
+from streamlit_js_eval import streamlit_js_eval
+
 
 # =====================================
 # PAGE CONFIG
@@ -308,7 +310,36 @@ st.markdown("""
 Silakan isi data pemasangan papan nama toko dengan lengkap dan benar.
 """)
 
+# =====================================
+# GET GEOLOCATION
+# =====================================
+location = streamlit_js_eval(
+    js_expressions="""
+    new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                })
+            },
+            (error) => {
+                resolve(null)
+            }
+        )
+    })
+    """,
+    key="get_location"
+)
 
+latitude = ""
+longitude = ""
+
+if location:
+
+    latitude = location.get("latitude", "")
+    longitude = location.get("longitude", "")
+    
 # =====================================
 # SELECT ID TOKO
 # =====================================
@@ -410,6 +441,20 @@ bukti = st.file_uploader(
     accept_multiple_files=False
 )
 
+# =====================================
+# SHOW GEOLOCATION
+# =====================================
+st.text_input(
+    "Latitude",
+    value=str(latitude),
+    disabled=True
+)
+
+st.text_input(
+    "Longitude",
+    value=str(longitude),
+    disabled=True
+)
 
 # =====================================
 # SUBMIT BUTTON
