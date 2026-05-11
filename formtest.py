@@ -345,19 +345,26 @@ if location:
 # =====================================
 # SELECT ID TOKO
 # =====================================
-list_toko = [""] + df_master["ID Toko"].astype(str).tolist()
+df_master["Toko Display"] = (
+    df_master["ID Toko"].astype(str)
+    + " - "
+    + df_master["Nama Toko"].astype(str)
+)
 
-id_toko = st.selectbox(
-    "ID Toko",
+list_toko = [""] + df_master["Toko Display"].tolist()
+
+selected_toko = st.selectbox(
+    "Cari ID / Nama Toko",
     list_toko,
     key=f"id_toko_{st.session_state.form_key}"
 )
 
-
 # =====================================
 # GET STORE DATA
 # =====================================
-if id_toko != "":
+if selected_toko != "":
+
+    id_toko = selected_toko.split(" - ")[0]
 
     data_toko = df_master[
         df_master["ID Toko"].astype(str) == id_toko
