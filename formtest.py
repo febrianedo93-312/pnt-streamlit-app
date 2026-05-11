@@ -340,6 +340,8 @@ if location:
     latitude = location.get("latitude", "")
     longitude = location.get("longitude", "")
     
+    koordinat = f"{latitude}, {longitude}"
+    
 # =====================================
 # SELECT ID TOKO
 # =====================================
@@ -445,14 +447,8 @@ bukti = st.file_uploader(
 # SHOW GEOLOCATION
 # =====================================
 st.text_input(
-    "Latitude",
-    value=str(latitude),
-    disabled=True
-)
-
-st.text_input(
-    "Longitude",
-    value=str(longitude),
+    "Koordinat Lokasi",
+    value=koordinat,
     disabled=True
 )
 
@@ -543,6 +539,7 @@ if st.button("Submit"):
                     str(dist3),
                     str(tso),
                     str(tanggal),
+                    str(koordinat),
                     str(link_file)
                 ])
 
