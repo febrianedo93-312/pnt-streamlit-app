@@ -298,7 +298,80 @@ textarea::placeholder {
     background: #00695C;
     color: white !important;
 }
+/* HEADER MOBILE FRIENDLY */
+.header-mobile {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
 
+.header-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 80px;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-logo img {
+    max-width: 70px;
+    height: auto;
+}
+
+.header-title-mobile {
+    text-align: center;
+    color: #111827 !important;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1.15;
+    margin: 0;
+}
+
+.header-subtitle-mobile {
+    text-align: center;
+    color: #374151 !important;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+/* KHUSUS HP */
+@media (max-width: 600px) {
+    .block-container {
+        padding: 1rem !important;
+        border-radius: 0 !important;
+    }
+
+    .header-mobile {
+        padding: 14px 10px;
+        margin-top: 0;
+    }
+
+    .header-row {
+        grid-template-columns: 55px 1fr 55px;
+        gap: 6px;
+    }
+
+    .header-logo img {
+        max-width: 48px;
+    }
+
+    .header-title-mobile {
+        font-size: 22px;
+        line-height: 1.2;
+    }
+
+    .header-subtitle-mobile {
+        font-size: 12px;
+    }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -431,35 +504,37 @@ def success_dialog():
 # =====================================
 # HEADER
 # =====================================
-st.markdown('<div class="header-card">', unsafe_allow_html=True)
+import base64
 
-col1, col2, col3 = st.columns([1.1, 4, 1.1])
+def image_to_base64(path):
+    with open(path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
 
-with col1:
-    st.markdown('<div class="logo-box">', unsafe_allow_html=True)
-    if SIG_LOGO.exists():
-        st.image(str(SIG_LOGO), width=95)
-    else:
-        st.warning("Logo SIG tidak ditemukan")
-    st.markdown('</div>', unsafe_allow_html=True)
+sig_base64 = image_to_base64(SIG_LOGO) if SIG_LOGO.exists() else ""
+smbr_base64 = image_to_base64(SMBR_LOGO) if SMBR_LOGO.exists() else ""
 
-with col2:
-    st.markdown("""
-    <h1 class="header-title">FORM KUNJUNGAN SALESMAN</h1>
-    <div class="header-subtitle">
-        Sistem Monitoring Kunjungan Toko - AP2
+st.markdown(f"""
+<div class="header-mobile">
+    <div class="header-row">
+        <div class="header-logo">
+            <img src="data:image/png;base64,{sig_base64}">
+        </div>
+
+        <div>
+            <h1 class="header-title-mobile">
+                FORM KUNJUNGAN<br>SALESMAN
+            </h1>
+            <div class="header-subtitle-mobile">
+                Sistem Monitoring Kunjungan Toko - AP2
+            </div>
+        </div>
+
+        <div class="header-logo">
+            <img src="data:image/jpeg;base64,{smbr_base64}">
+        </div>
     </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown('<div class="logo-box">', unsafe_allow_html=True)
-    if SMBR_LOGO.exists():
-        st.image(str(SMBR_LOGO), width=95)
-    else:
-        st.warning("Logo SMBR tidak ditemukan")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
+</div>
+""", unsafe_allow_html=True)
 
 
 # =====================================
