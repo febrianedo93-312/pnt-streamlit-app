@@ -522,6 +522,95 @@ bukti = st.file_uploader(
 )
 
 # =====================================
+# SHARE OF WALLET / INFO PESAING
+# =====================================
+st.markdown("### Share of Wallet dan Info Pesaing")
+
+sow_sig = st.number_input(
+    "SOW SIG (%)",
+    min_value=0.0,
+    max_value=100.0,
+    step=1.0,
+    key=f"sow_sig_{st.session_state.form_key}"
+)
+
+info_pesaing_1 = st.text_area(
+    "Info Pesaing 1",
+    key=f"info_pesaing_1_{st.session_state.form_key}"
+)
+
+sow_pesaing_1 = st.number_input(
+    "SOW Pesaing 1 (%)",
+    min_value=0.0,
+    max_value=100.0,
+    step=1.0,
+    key=f"sow_pesaing_1_{st.session_state.form_key}"
+)
+
+info_pesaing_2 = st.text_area(
+    "Info Pesaing 2",
+    key=f"info_pesaing_2_{st.session_state.form_key}"
+)
+
+sow_pesaing_2 = st.number_input(
+    "SOW Pesaing 2 (%)",
+    min_value=0.0,
+    max_value=100.0,
+    step=1.0,
+    key=f"sow_pesaing_2_{st.session_state.form_key}"
+)
+
+info_pesaing_3 = st.text_area(
+    "Info Pesaing 3",
+    key=f"info_pesaing_3_{st.session_state.form_key}"
+)
+
+sow_pesaing_3 = st.number_input(
+    "SOW Pesaing 3 (%)",
+    min_value=0.0,
+    max_value=100.0,
+    step=1.0,
+    key=f"sow_pesaing_3_{st.session_state.form_key}"
+)
+
+info_pesaing_4 = st.text_area(
+    "Info Pesaing 4",
+    key=f"info_pesaing_4_{st.session_state.form_key}"
+)
+
+sow_pesaing_4 = st.number_input(
+    "SOW Pesaing 4 (%)",
+    min_value=0.0,
+    max_value=100.0,
+    step=1.0,
+    key=f"sow_pesaing_4_{st.session_state.form_key}"
+)
+
+info_pesaing_5 = st.text_area(
+    "Info Pesaing 5",
+    key=f"info_pesaing_5_{st.session_state.form_key}"
+)
+
+sow_pesaing_5 = st.number_input(
+    "SOW Pesaing 5 (%)",
+    min_value=0.0,
+    max_value=100.0,
+    step=1.0,
+    key=f"sow_pesaing_5_{st.session_state.form_key}"
+)
+
+total_sow = (
+    sow_sig
+    + sow_pesaing_1
+    + sow_pesaing_2
+    + sow_pesaing_3
+    + sow_pesaing_4
+    + sow_pesaing_5
+)
+
+st.caption(f"Total SOW: {total_sow:.0f}%")
+
+# =====================================
 # SHOW GEOLOCATION
 # =====================================
 st.text_input(
@@ -548,6 +637,10 @@ if st.button("Submit"):
     elif bukti is None:
 
         st.error("Bukti Kunjungan wajib diupload.")
+
+    elif total_sow > 100:
+
+        st.error("Total SOW tidak boleh lebih dari 100%.")
 
     else:
 
@@ -621,7 +714,18 @@ if st.button("Submit"):
                     str(koordinat_toko),
                     str(koordinat),
                     str(jarak_selisih),
-                    str(link_file)
+                    str(link_file),
+                    str(sow_sig),
+                    str(info_pesaing_1),
+                    str(sow_pesaing_1),
+                    str(info_pesaing_2),
+                    str(sow_pesaing_2),
+                    str(info_pesaing_3),
+                    str(sow_pesaing_3),
+                    str(info_pesaing_4),
+                    str(sow_pesaing_4),
+                    str(info_pesaing_5),
+                    str(sow_pesaing_5)
                 ])
 
                 # SUCCESS
