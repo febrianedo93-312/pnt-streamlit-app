@@ -268,6 +268,38 @@ div[role="option"][aria-selected="true"] {
 }
 
 </style>
+/* Selectbox utama */
+[data-baseweb="select"]{
+    background:#ffffff !important;
+    color:#111827 !important;
+}
+
+/* Input search */
+[data-baseweb="input"]{
+    background:#ffffff !important;
+}
+
+[data-baseweb="input"] input{
+    background:#ffffff !important;
+    color:#111827 !important;
+    -webkit-text-fill-color:#111827 !important;
+}
+
+/* Dropdown */
+[data-baseweb="popover"]{
+    background:#ffffff !important;
+}
+
+[data-baseweb="menu"]{
+    background:#ffffff !important;
+}
+
+[data-baseweb="menu"] *{
+    background:#ffffff !important;
+    color:#111827 !important;
+}
+
+</style>
 """, unsafe_allow_html=True)
 # =====================================
 # GOOGLE SHEET MASTER DATA
