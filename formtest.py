@@ -10,15 +10,24 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 from streamlit_js_eval import streamlit_js_eval
 from math import radians, sin, cos, sqrt, atan2
+from pathlib import Path
 
 
 # =====================================
 # PAGE CONFIG
 # =====================================
 st.set_page_config(
-    page_title="Salesman Form",
+    page_title="Form Kunjungan Salesman",
     layout="centered"
 )
+
+
+# =====================================
+# PATH LOGO
+# =====================================
+BASE_DIR = Path(__file__).parent
+SIG_LOGO = BASE_DIR / "assets" / "sig.png"
+SMBR_LOGO = BASE_DIR / "assets" / "smbr.jpg"
 
 
 # =====================================
@@ -36,56 +45,93 @@ cloudinary.config(
 # =====================================
 st.markdown("""
 <style>
+
 .stApp {
-    background-color: #f3f4f6;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
 }
 
 .block-container {
     background-color: white;
-    padding: 2.5rem;
+    padding: 2rem 2.5rem;
     border-radius: 18px;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
-    max-width: 850px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+    max-width: 900px;
 }
 
-h1 {
-    color: #111827 !important;
-    font-weight: 700 !important;
+.header-card {
+    background: linear-gradient(90deg, #00796B 0%, #009688 100%);
+    border-radius: 18px;
+    padding: 18px 22px;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
 }
 
-h2, h3, h4, h5, h6 {
-    color: #111827 !important;
+.header-title {
+    text-align: center;
+    color: white;
+    font-size: 34px;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.2;
 }
 
-p {
-    color: #6b7280;
+.header-subtitle {
+    text-align: center;
+    color: #e0f2f1;
+    font-size: 15px;
+    margin-top: 6px;
+}
+
+.logo-box {
+    background-color: white;
+    border-radius: 14px;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 82px;
+}
+
+.section-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #064e3b;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #d1fae5;
 }
 
 label {
     color: #374151 !important;
     font-weight: 700 !important;
-    font-size: 15px !important;
+    font-size: 14px !important;
 }
 
-.stTextInput input {
-    background-color: white !important;
-    color: #111827 !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: 10px !important;
-}
-
-.stNumberInput input {
-    background-color: white !important;
-    color: #111827 !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: 10px !important;
-}
-
+.stTextInput input,
+.stNumberInput input,
 .stTextArea textarea {
     background-color: white !important;
     color: #111827 !important;
     border: 1px solid #d1d5db !important;
     border-radius: 10px !important;
+}
+
+.stTextInput input:disabled {
+    -webkit-text-fill-color: #111827 !important;
+    color: #111827 !important;
+    background-color: #f1f5f9 !important;
+    opacity: 1 !important;
+    border: 1px solid #cbd5e1 !important;
 }
 
 .stSelectbox div[data-baseweb="select"] {
@@ -100,49 +146,40 @@ label {
     border-radius: 10px !important;
 }
 
-.stTextInput input:disabled {
-    -webkit-text-fill-color: #111827 !important;
-    color: #111827 !important;
-    background-color: #eef2f7 !important;
-    opacity: 1 !important;
+[data-testid="stFileUploader"] {
+    background-color: white;
+    border-radius: 12px;
+    border: 1px dashed #94a3b8;
+    padding: 1rem;
 }
 
 .stButton > button {
-    background-color: #009688;
+    background: linear-gradient(90deg, #00796B 0%, #009688 100%);
     color: white !important;
-    border-radius: 10px;
-    height: 48px;
+    border-radius: 12px;
+    height: 52px;
     width: 100%;
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 17px;
+    font-weight: 800;
     border: none;
     transition: 0.3s;
 }
 
 .stButton > button p {
     color: white !important;
-    font-weight: 700 !important;
+    font-weight: 800 !important;
 }
 
 .stButton > button:hover {
-    background-color: #00796b;
+    background: linear-gradient(90deg, #00695C 0%, #00897B 100%);
     color: white !important;
-}
-
-[data-testid="stFileUploader"] {
-    background-color: white;
-    border-radius: 12px;
-    border: 1px dashed #cbd5e1;
-    padding: 1rem;
+    transform: translateY(-1px);
 }
 
 [data-testid="stDialog"] {
     border-radius: 18px;
 }
 
-[data-testid="stSpinner"] {
-    color: #009688 !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -153,9 +190,6 @@ label {
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1JZ5L-witlH_9E5ehJIMsRlXzrtP0BWXeg-qkFsx3XuE/export?format=csv"
 
 
-# =====================================
-# LOAD MASTER DATA
-# =====================================
 @st.cache_data(ttl=300)
 def load_master_data():
     df = pd.read_csv(SHEET_URL)
@@ -190,9 +224,6 @@ def connect_gsheet():
     return client
 
 
-# =====================================
-# OPEN RESULT SHEET
-# =====================================
 @st.cache_resource
 def open_result_sheet():
     client_sheet = connect_gsheet()
@@ -203,22 +234,17 @@ sheet_hasil = open_result_sheet()
 
 
 # =====================================
-# UPLOAD TO CLOUDINARY
+# FUNCTIONS
 # =====================================
 def upload_to_cloudinary(uploaded_file):
     uploaded_file.seek(0)
-
     result = cloudinary.uploader.upload(
         uploaded_file,
         folder="PNT_UPLOAD"
     )
-
     return result["secure_url"]
 
 
-# =====================================
-# GET EXIF DATA
-# =====================================
 def get_exif_data(uploaded_file):
     try:
         image = Image.open(uploaded_file)
@@ -239,9 +265,6 @@ def get_exif_data(uploaded_file):
         return None
 
 
-# =====================================
-# CALCULATE DISTANCE
-# =====================================
 def calculate_distance(lat1, lon1, lat2, lon2):
     R = 6371000
 
@@ -256,14 +279,13 @@ def calculate_distance(lat1, lon1, lat2, lon2):
     )
 
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
     distance = R * c
 
     return round(distance, 2)
 
 
 # =====================================
-# FORM RESET KEY
+# SESSION STATE
 # =====================================
 if "form_key" not in st.session_state:
     st.session_state.form_key = 0
@@ -277,12 +299,8 @@ def success_dialog():
     st.success("✅ Data berhasil disimpan!")
 
     st.markdown("""
-    <div style="
-        color:#111827;
-        font-size:16px;
-        margin-top:10px;
-    ">
-    Data PNT berhasil direcord ke sistem.
+    <div style="color:#111827;font-size:16px;margin-top:10px;">
+        Data kunjungan salesman berhasil direcord ke sistem.
     </div>
     """, unsafe_allow_html=True)
 
@@ -292,27 +310,37 @@ def success_dialog():
 
 
 # =====================================
-# HEADER WITH LOGO
+# HEADER
 # =====================================
-col_logo_left, col_title, col_logo_right = st.columns([1, 4, 1])
+st.markdown('<div class="header-card">', unsafe_allow_html=True)
 
-with col_logo_left:
-    st.image("assets/sig.png", width=110)
+col1, col2, col3 = st.columns([1.1, 4, 1.1])
 
-with col_title:
+with col1:
+    st.markdown('<div class="logo-box">', unsafe_allow_html=True)
+    if SIG_LOGO.exists():
+        st.image(str(SIG_LOGO), width=95)
+    else:
+        st.warning("Logo SIG tidak ditemukan")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col2:
     st.markdown("""
-    <div style="text-align:center;">
-        <h1 style="margin-bottom:5px;">Form Kunjungan Salesman</h1>
-        <p style="font-size:16px;color:#6b7280;margin-top:0;">
-            Silakan isi data kunjungan toko dengan lengkap dan benar.
-        </p>
+    <h1 class="header-title">FORM KUNJUNGAN SALESMAN</h1>
+    <div class="header-subtitle">
+        Sistem Monitoring Kunjungan Toko - PT Semen Baturaja Tbk
     </div>
     """, unsafe_allow_html=True)
 
-with col_logo_right:
-    st.image("assets/smbr.jpg", width=110)
+with col3:
+    st.markdown('<div class="logo-box">', unsafe_allow_html=True)
+    if SMBR_LOGO.exists():
+        st.image(str(SMBR_LOGO), width=95)
+    else:
+        st.warning("Logo SMBR tidak ditemukan")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.divider()
+st.markdown('</div>', unsafe_allow_html=True)
 
 
 # =====================================
@@ -359,6 +387,10 @@ df_master["Toko Display"] = (
 
 list_toko = [""] + df_master["Toko Display"].tolist()
 
+
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
+st.markdown('<div class="section-title">🏪 Data Toko</div>', unsafe_allow_html=True)
+
 selected_toko = st.selectbox(
     "Cari ID / Nama Toko",
     list_toko,
@@ -385,7 +417,6 @@ if selected_toko != "":
 
     master_lat = float(data_toko["Latitude"])
     master_lon = float(data_toko["Longitude"])
-
     koordinat_toko = f"{master_lat}, {master_lon}"
 
     if latitude and longitude:
@@ -413,32 +444,65 @@ else:
     jarak_selisih = ""
 
 
-# =====================================
-# AUTO FILL
-# =====================================
 st.text_input("Nama Toko", value=nama_toko, disabled=True)
 st.text_input("Alamat Toko", value=alamat, disabled=True)
 st.text_input("Distrik Toko", value=distrik, disabled=True)
-st.text_input("Nama Distributor 1", value=dist1, disabled=True)
-st.text_input("Nama Distributor 2", value=dist2, disabled=True)
-st.text_input("Nama Distributor 3", value=dist3, disabled=True)
+
+col_d1, col_d2, col_d3 = st.columns(3)
+
+with col_d1:
+    st.text_input("Distributor 1", value=dist1, disabled=True)
+
+with col_d2:
+    st.text_input("Distributor 2", value=dist2, disabled=True)
+
+with col_d3:
+    st.text_input("Distributor 3", value=dist3, disabled=True)
+
 st.text_input("Koordinat Toko", value=koordinat_toko, disabled=True)
 
+st.markdown('</div>', unsafe_allow_html=True)
+
 
 # =====================================
-# USER INPUT
+# DATA SALESMAN
 # =====================================
-tso = st.text_input(
-    "Nama Salesman",
-    key=f"tso_{st.session_state.form_key}"
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
+st.markdown('<div class="section-title">👤 Data Salesman & Kunjungan</div>', unsafe_allow_html=True)
+
+col_salesman, col_tanggal = st.columns(2)
+
+with col_salesman:
+    tso = st.text_input(
+        "Nama Salesman",
+        key=f"tso_{st.session_state.form_key}"
+    )
+
+with col_tanggal:
+    tanggal = st.date_input(
+        "Tanggal Kunjungan",
+        value=date.today()
+    )
+
+st.text_input(
+    "Koordinat Lokasi Saat Ini",
+    value=koordinat,
+    disabled=True
 )
 
-tanggal = st.date_input(
-    "Tanggal Kunjungan",
-    value=date.today()
-)
+if jarak_selisih != "":
+    st.info(f"Jarak dari titik toko: {jarak_selisih} meter")
 
-st.info("Gunakan kamera HP langsung saat mengambil foto Kunjungan.")
+st.markdown('</div>', unsafe_allow_html=True)
+
+
+# =====================================
+# FOTO KUNJUNGAN
+# =====================================
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
+st.markdown('<div class="section-title">📸 Bukti Kunjungan</div>', unsafe_allow_html=True)
+
+st.info("Gunakan kamera HP langsung saat mengambil foto kunjungan.")
 
 bukti = st.file_uploader(
     "Ambil Foto Kunjungan",
@@ -447,11 +511,16 @@ bukti = st.file_uploader(
     accept_multiple_files=False
 )
 
+st.markdown('</div>', unsafe_allow_html=True)
+
 
 # =====================================
-# SHARE OF WALLET / INFO PESAING
+# SHARE OF WALLET
 # =====================================
-st.markdown("### Share of Wallet dan Info Pesaing")
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
+st.markdown('<div class="section-title">📊 Share of Wallet & Info Pesaing</div>', unsafe_allow_html=True)
+
+st.caption("Isi estimasi porsi pembelian toko. Total SOW maksimal 100%.")
 
 sow_sig = st.number_input(
     "SOW SIG (%)",
@@ -461,70 +530,83 @@ sow_sig = st.number_input(
     key=f"sow_sig_{st.session_state.form_key}"
 )
 
-info_pesaing_1 = st.text_area(
-    "Info Pesaing 1",
-    key=f"info_pesaing_1_{st.session_state.form_key}"
-)
+st.markdown("#### Data Pesaing")
 
-sow_pesaing_1 = st.number_input(
-    "SOW Pesaing 1 (%)",
-    min_value=0.0,
-    max_value=100.0,
-    step=1.0,
-    key=f"sow_pesaing_1_{st.session_state.form_key}"
-)
+col_p1a, col_p1b = st.columns([3, 1])
+with col_p1a:
+    info_pesaing_1 = st.text_input(
+        "Info Pesaing 1",
+        placeholder="Contoh: Conch / Tiga Roda / Merah Putih, harga, program, stok",
+        key=f"info_pesaing_1_{st.session_state.form_key}"
+    )
+with col_p1b:
+    sow_pesaing_1 = st.number_input(
+        "SOW 1 (%)",
+        min_value=0.0,
+        max_value=100.0,
+        step=1.0,
+        key=f"sow_pesaing_1_{st.session_state.form_key}"
+    )
 
-info_pesaing_2 = st.text_area(
-    "Info Pesaing 2",
-    key=f"info_pesaing_2_{st.session_state.form_key}"
-)
+col_p2a, col_p2b = st.columns([3, 1])
+with col_p2a:
+    info_pesaing_2 = st.text_input(
+        "Info Pesaing 2",
+        key=f"info_pesaing_2_{st.session_state.form_key}"
+    )
+with col_p2b:
+    sow_pesaing_2 = st.number_input(
+        "SOW 2 (%)",
+        min_value=0.0,
+        max_value=100.0,
+        step=1.0,
+        key=f"sow_pesaing_2_{st.session_state.form_key}"
+    )
 
-sow_pesaing_2 = st.number_input(
-    "SOW Pesaing 2 (%)",
-    min_value=0.0,
-    max_value=100.0,
-    step=1.0,
-    key=f"sow_pesaing_2_{st.session_state.form_key}"
-)
+col_p3a, col_p3b = st.columns([3, 1])
+with col_p3a:
+    info_pesaing_3 = st.text_input(
+        "Info Pesaing 3",
+        key=f"info_pesaing_3_{st.session_state.form_key}"
+    )
+with col_p3b:
+    sow_pesaing_3 = st.number_input(
+        "SOW 3 (%)",
+        min_value=0.0,
+        max_value=100.0,
+        step=1.0,
+        key=f"sow_pesaing_3_{st.session_state.form_key}"
+    )
 
-info_pesaing_3 = st.text_area(
-    "Info Pesaing 3",
-    key=f"info_pesaing_3_{st.session_state.form_key}"
-)
+col_p4a, col_p4b = st.columns([3, 1])
+with col_p4a:
+    info_pesaing_4 = st.text_input(
+        "Info Pesaing 4",
+        key=f"info_pesaing_4_{st.session_state.form_key}"
+    )
+with col_p4b:
+    sow_pesaing_4 = st.number_input(
+        "SOW 4 (%)",
+        min_value=0.0,
+        max_value=100.0,
+        step=1.0,
+        key=f"sow_pesaing_4_{st.session_state.form_key}"
+    )
 
-sow_pesaing_3 = st.number_input(
-    "SOW Pesaing 3 (%)",
-    min_value=0.0,
-    max_value=100.0,
-    step=1.0,
-    key=f"sow_pesaing_3_{st.session_state.form_key}"
-)
-
-info_pesaing_4 = st.text_area(
-    "Info Pesaing 4",
-    key=f"info_pesaing_4_{st.session_state.form_key}"
-)
-
-sow_pesaing_4 = st.number_input(
-    "SOW Pesaing 4 (%)",
-    min_value=0.0,
-    max_value=100.0,
-    step=1.0,
-    key=f"sow_pesaing_4_{st.session_state.form_key}"
-)
-
-info_pesaing_5 = st.text_area(
-    "Info Pesaing 5",
-    key=f"info_pesaing_5_{st.session_state.form_key}"
-)
-
-sow_pesaing_5 = st.number_input(
-    "SOW Pesaing 5 (%)",
-    min_value=0.0,
-    max_value=100.0,
-    step=1.0,
-    key=f"sow_pesaing_5_{st.session_state.form_key}"
-)
+col_p5a, col_p5b = st.columns([3, 1])
+with col_p5a:
+    info_pesaing_5 = st.text_input(
+        "Info Pesaing 5",
+        key=f"info_pesaing_5_{st.session_state.form_key}"
+    )
+with col_p5b:
+    sow_pesaing_5 = st.number_input(
+        "SOW 5 (%)",
+        min_value=0.0,
+        max_value=100.0,
+        step=1.0,
+        key=f"sow_pesaing_5_{st.session_state.form_key}"
+    )
 
 total_sow = (
     sow_sig
@@ -535,23 +617,27 @@ total_sow = (
     + sow_pesaing_5
 )
 
-st.caption(f"Total SOW: {total_sow:.0f}%")
+st.progress(min(total_sow / 100, 1.0))
+
+if total_sow < 100:
+    st.warning(f"Total SOW saat ini {total_sow:.0f}%. Masih tersisa {100 - total_sow:.0f}%.")
+
+elif total_sow == 100:
+    st.success("Total SOW sudah 100%.")
+
+else:
+    st.error(f"Total SOW {total_sow:.0f}%. Tidak boleh lebih dari 100%.")
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 
 # =====================================
-# SHOW GEOLOCATION
+# SUBMIT
 # =====================================
-st.text_input(
-    "Koordinat Lokasi",
-    value=koordinat,
-    disabled=True
-)
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
+st.markdown('<div class="section-title">💾 Simpan Data</div>', unsafe_allow_html=True)
 
-
-# =====================================
-# SUBMIT BUTTON
-# =====================================
-if st.button("Submit"):
+if st.button("SIMPAN DATA KUNJUNGAN"):
 
     if id_toko == "":
         st.error("Silakan pilih ID Toko.")
@@ -633,3 +719,5 @@ if st.button("Submit"):
 
             except Exception as e:
                 st.error(f"Terjadi error: {e}")
+
+st.markdown('</div>', unsafe_allow_html=True)
