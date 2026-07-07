@@ -47,7 +47,7 @@ st.markdown("""
 <style>
 
 .stApp {
-    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    background: #f3f4f6;
 }
 
 .block-container {
@@ -58,17 +58,19 @@ st.markdown("""
     max-width: 900px;
 }
 
+/* HEADER */
 .header-card {
-    background: linear-gradient(90deg, #00796B 0%, #009688 100%);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     border-radius: 18px;
     padding: 18px 22px;
     margin-bottom: 22px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
 .header-title {
     text-align: center;
-    color: white;
+    color: #064e3b !important;
     font-size: 34px;
     font-weight: 800;
     margin: 0;
@@ -77,7 +79,7 @@ st.markdown("""
 
 .header-subtitle {
     text-align: center;
-    color: #e0f2f1;
+    color: #374151 !important;
     font-size: 15px;
     margin-top: 6px;
 }
@@ -92,6 +94,7 @@ st.markdown("""
     min-height: 82px;
 }
 
+/* SECTION */
 .section-card {
     background-color: #ffffff;
     border: 1px solid #e5e7eb;
@@ -105,10 +108,16 @@ st.markdown("""
 .section-title {
     font-size: 20px;
     font-weight: 800;
-    color: #064e3b;
+    color: #064e3b !important;
     margin-bottom: 14px;
     padding-bottom: 8px;
     border-bottom: 2px solid #d1fae5;
+}
+
+/* FORCE TEXT COLOR */
+h1, h2, h3, h4, h5, h6,
+p, span, div, label {
+    color: #111827;
 }
 
 label {
@@ -117,6 +126,15 @@ label {
     font-size: 14px !important;
 }
 
+.stMarkdown p {
+    color: #374151 !important;
+}
+
+.stCaptionContainer p {
+    color: #4b5563 !important;
+}
+
+/* INPUT */
 .stTextInput input,
 .stNumberInput input,
 .stTextArea textarea {
@@ -146,6 +164,14 @@ label {
     border-radius: 10px !important;
 }
 
+/* PLACEHOLDER */
+input::placeholder,
+textarea::placeholder {
+    color: #6b7280 !important;
+    opacity: 1 !important;
+}
+
+/* FILE UPLOADER */
 [data-testid="stFileUploader"] {
     background-color: white;
     border-radius: 12px;
@@ -153,8 +179,14 @@ label {
     padding: 1rem;
 }
 
+/* ALERT TEXT */
+.stAlert p {
+    color: #111827 !important;
+}
+
+/* BUTTON */
 .stButton > button {
-    background: linear-gradient(90deg, #00796B 0%, #009688 100%);
+    background: #00897B;
     color: white !important;
     border-radius: 12px;
     height: 52px;
@@ -162,7 +194,6 @@ label {
     font-size: 17px;
     font-weight: 800;
     border: none;
-    transition: 0.3s;
 }
 
 .stButton > button p {
@@ -171,13 +202,8 @@ label {
 }
 
 .stButton > button:hover {
-    background: linear-gradient(90deg, #00695C 0%, #00897B 100%);
+    background: #00695C;
     color: white !important;
-    transform: translateY(-1px);
-}
-
-[data-testid="stDialog"] {
-    border-radius: 18px;
 }
 
 </style>
