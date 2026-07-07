@@ -208,7 +208,47 @@ textarea::placeholder {
 
 </style>
 """, unsafe_allow_html=True)
+# ===========================
+   SELECTBOX DROPDOWN
+# ===========================
 
+/* Kotak input */
+.stSelectbox div[data-baseweb="select"] {
+    background: white !important;
+    color: #111827 !important;
+}
+
+/* Dropdown menu */
+div[data-baseweb="popover"] {
+    background: white !important;
+}
+
+div[data-baseweb="popover"] * {
+    color: #111827 !important;
+}
+
+/* List item */
+li {
+    background: white !important;
+    color: #111827 !important;
+}
+
+/* Hover */
+li:hover {
+    background: #e8f5e9 !important;
+    color: #064e3b !important;
+}
+
+/* Item yang dipilih */
+div[aria-selected="true"] {
+    background: #c8e6c9 !important;
+    color: #064e3b !important;
+}
+
+/* Input pencarian */
+input {
+    color: #111827 !important;
+}
 
 # =====================================
 # GOOGLE SHEET MASTER DATA
