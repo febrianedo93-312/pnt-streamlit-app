@@ -21,7 +21,7 @@ from math import radians, sin, cos, sqrt, atan2
 # PAGE CONFIG
 # =====================================
 st.set_page_config(
-    page_title="PNT Form",
+    page_title="Salesman Form",
     layout="centered"
 )
 
@@ -329,9 +329,9 @@ def success_dialog():
 # TITLE
 # =====================================
 st.markdown("""
-# Pemasangan Papan Nama Toko (PNT)
+# Form Kunjungan Salesman
 
-Silakan isi data pemasangan papan nama toko dengan lengkap dan benar.
+Silakan isi data kunjungan toko dengan lengkap dan benar.
 """)
 
 # =====================================
@@ -501,21 +501,21 @@ st.text_input(
 # USER INPUT
 # =====================================
 tso = st.text_input(
-    "Nama TSO",
+    "Nama Salesman",
     key=f"tso_{st.session_state.form_key}"
 )
 
 tanggal = st.date_input(
-    "Tanggal Pemasangan",
+    "Tanggal Kunjungan",
     value=date.today()
 )
 
 st.info(
-    "Gunakan kamera HP langsung saat mengambil foto pemasangan."
+    "Gunakan kamera HP langsung saat mengambil foto Kunjungan."
 )
 
 bukti = st.file_uploader(
-    "Ambil Foto Pemasangan",
+    "Ambil Foto Kunjungan",
     type=["jpg", "jpeg", "png"],
     key=f"bukti_{st.session_state.form_key}",
     accept_multiple_files=False
@@ -543,11 +543,11 @@ if st.button("Submit"):
 
     elif tso == "":
 
-        st.error("Nama TSO wajib diisi.")
+        st.error("Nama Salesman wajib diisi.")
 
     elif bukti is None:
 
-        st.error("Bukti pemasangan wajib diupload.")
+        st.error("Bukti Kunjungan wajib diupload.")
 
     else:
 
