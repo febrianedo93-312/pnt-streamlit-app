@@ -206,11 +206,10 @@ textarea::placeholder {
     color: white !important;
 }
 
-</style>
-""", unsafe_allow_html=True)
-# ===========================
+
+/* ===========================
    SELECTBOX DROPDOWN
-# ===========================
+=========================== */
 
 /* Kotak input */
 .stSelectbox div[data-baseweb="select"] {
@@ -250,6 +249,26 @@ input {
     color: #111827 !important;
 }
 
+/* Selectbox value text */
+.stSelectbox [data-baseweb="select"] span {
+    color: #111827 !important;
+}
+
+/* Dropdown option text */
+div[role="listbox"] div {
+    color: #111827 !important;
+    background-color: #ffffff !important;
+}
+
+/* Selected/highlighted option */
+div[role="option"]:hover,
+div[role="option"][aria-selected="true"] {
+    background-color: #e8f5e9 !important;
+    color: #064e3b !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
 # =====================================
 # GOOGLE SHEET MASTER DATA
 # =====================================
