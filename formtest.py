@@ -4,16 +4,11 @@ import gspread
 import cloudinary
 import cloudinary.uploader
 
-from datetime import date
-from datetime import datetime
-
+from datetime import date, datetime
 from oauth2client.service_account import ServiceAccountCredentials
-
 from PIL import Image
 from PIL.ExifTags import TAGS
-
 from streamlit_js_eval import streamlit_js_eval
-
 from math import radians, sin, cos, sqrt, atan2
 
 
@@ -41,13 +36,10 @@ cloudinary.config(
 # =====================================
 st.markdown("""
 <style>
-
-/* Background utama */
 .stApp {
     background-color: #f3f4f6;
 }
 
-/* Container form */
 .block-container {
     background-color: white;
     padding: 2.5rem;
@@ -56,30 +48,25 @@ st.markdown("""
     max-width: 850px;
 }
 
-/* Judul */
 h1 {
     color: #111827 !important;
     font-weight: 700 !important;
 }
 
-/* Sub heading */
 h2, h3, h4, h5, h6 {
     color: #111827 !important;
 }
 
-/* Paragraph */
 p {
     color: #6b7280;
 }
 
-/* Label field */
 label {
     color: #374151 !important;
     font-weight: 700 !important;
     font-size: 15px !important;
 }
 
-/* Text input */
 .stTextInput input {
     background-color: white !important;
     color: #111827 !important;
@@ -87,32 +74,39 @@ label {
     border-radius: 10px !important;
 }
 
-/* Selectbox */
+.stNumberInput input {
+    background-color: white !important;
+    color: #111827 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 10px !important;
+}
+
+.stTextArea textarea {
+    background-color: white !important;
+    color: #111827 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 10px !important;
+}
+
 .stSelectbox div[data-baseweb="select"] {
     background-color: white !important;
     color: #111827 !important;
     border-radius: 10px !important;
 }
 
-/* Date input */
 .stDateInput input {
     background-color: white !important;
     color: #111827 !important;
     border-radius: 10px !important;
 }
 
-/* Disabled autofill */
 .stTextInput input:disabled {
-
     -webkit-text-fill-color: #111827 !important;
     color: #111827 !important;
-
     background-color: #eef2f7 !important;
-
     opacity: 1 !important;
 }
 
-/* Submit button */
 .stButton > button {
     background-color: #009688;
     color: white !important;
@@ -125,19 +119,16 @@ label {
     transition: 0.3s;
 }
 
-/* Submit button text */
 .stButton > button p {
     color: white !important;
     font-weight: 700 !important;
 }
 
-/* Hover button */
 .stButton > button:hover {
     background-color: #00796b;
     color: white !important;
 }
 
-/* File uploader */
 [data-testid="stFileUploader"] {
     background-color: white;
     border-radius: 12px;
@@ -145,17 +136,13 @@ label {
     padding: 1rem;
 }
 
-/* Dialog popup */
 [data-testid="stDialog"] {
     border-radius: 18px;
 }
 
-/* Spinner */
 [data-testid="stSpinner"] {
     color: #009688 !important;
 }
-
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -171,9 +158,7 @@ SHEET_URL = "https://docs.google.com/spreadsheets/d/1JZ5L-witlH_9E5ehJIMsRlXzrtP
 # =====================================
 @st.cache_data(ttl=300)
 def load_master_data():
-
     df = pd.read_csv(SHEET_URL)
-
     return df.fillna("")
 
 
@@ -185,30 +170,23 @@ df_master = load_master_data()
 # =====================================
 @st.cache_resource
 def connect_gsheet():
-
     scope = [
         "https://spreadsheets.google.com/feeds",
         "https://www.googleapis.com/auth/drive"
     ]
 
     try:
-
-        # STREAMLIT CLOUD
         creds = ServiceAccountCredentials.from_json_keyfile_dict(
             st.secrets["gcp_service_account"],
             scope
         )
-
     except:
-
-        # LOCAL PC
         creds = ServiceAccountCredentials.from_json_keyfile_name(
             "service_account.json",
             scope
         )
 
     client = gspread.authorize(creds)
-
     return client
 
 
@@ -217,9 +195,7 @@ def connect_gsheet():
 # =====================================
 @st.cache_resource
 def open_result_sheet():
-
     client_sheet = connect_gsheet()
-
     return client_sheet.open("Hasil PNT").sheet1
 
 
@@ -230,8 +206,6 @@ sheet_hasil = open_result_sheet()
 # UPLOAD TO CLOUDINARY
 # =====================================
 def upload_to_cloudinary(uploaded_file):
-
-    # RESET FILE POINTER
     uploaded_file.seek(0)
 
     result = cloudinary.uploader.upload(
@@ -246,11 +220,8 @@ def upload_to_cloudinary(uploaded_file):
 # GET EXIF DATA
 # =====================================
 def get_exif_data(uploaded_file):
-
     try:
-
         image = Image.open(uploaded_file)
-
         exif_data = image._getexif()
 
         if not exif_data:
@@ -259,23 +230,20 @@ def get_exif_data(uploaded_file):
         exif = {}
 
         for tag_id, value in exif_data.items():
-
             tag = TAGS.get(tag_id, tag_id)
-
             exif[tag] = value
 
         return exif
 
     except:
-
         return None
+
 
 # =====================================
 # CALCULATE DISTANCE
 # =====================================
 def calculate_distance(lat1, lon1, lat2, lon2):
-
-    R = 6371000  # meter
+    R = 6371000
 
     dlat = radians(lat2 - lat1)
     dlon = radians(lon2 - lon1)
@@ -292,7 +260,8 @@ def calculate_distance(lat1, lon1, lat2, lon2):
     distance = R * c
 
     return round(distance, 2)
-    
+
+
 # =====================================
 # FORM RESET KEY
 # =====================================
@@ -305,7 +274,6 @@ if "form_key" not in st.session_state:
 # =====================================
 @st.dialog("Notifikasi")
 def success_dialog():
-
     st.success("✅ Data berhasil disimpan!")
 
     st.markdown("""
@@ -319,20 +287,33 @@ def success_dialog():
     """, unsafe_allow_html=True)
 
     if st.button("OK"):
-
         st.session_state.form_key += 1
-
         st.rerun()
 
 
 # =====================================
-# TITLE
+# HEADER WITH LOGO
 # =====================================
-st.markdown("""
-# Form Kunjungan Salesman
+col_logo_left, col_title, col_logo_right = st.columns([1, 4, 1])
 
-Silakan isi data kunjungan toko dengan lengkap dan benar.
-""")
+with col_logo_left:
+    st.image("assets/sig.png", width=110)
+
+with col_title:
+    st.markdown("""
+    <div style="text-align:center;">
+        <h1 style="margin-bottom:5px;">Form Kunjungan Salesman</h1>
+        <p style="font-size:16px;color:#6b7280;margin-top:0;">
+            Silakan isi data kunjungan toko dengan lengkap dan benar.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col_logo_right:
+    st.image("assets/smbr.png", width=110)
+
+st.divider()
+
 
 # =====================================
 # GET GEOLOCATION
@@ -362,10 +343,8 @@ koordinat = ""
 jarak_selisih = ""
 
 if location:
-
     latitude = location.get("latitude", "")
     longitude = location.get("longitude", "")
-
     koordinat = f"{latitude}, {longitude}"
 
 
@@ -391,7 +370,6 @@ selected_toko = st.selectbox(
 # GET STORE DATA
 # =====================================
 if selected_toko != "":
-
     id_toko = selected_toko.split(" - ")[0]
 
     data_toko = df_master[
@@ -405,96 +383,46 @@ if selected_toko != "":
     dist2 = data_toko["Distributor 2"]
     dist3 = data_toko["Distributor 3"]
 
-    # MASTER KOORDINAT TOKO
     master_lat = float(data_toko["Latitude"])
     master_lon = float(data_toko["Longitude"])
 
     koordinat_toko = f"{master_lat}, {master_lon}"
 
-    # =====================================
-    # CALCULATE DISTANCE
-    # =====================================
     if latitude and longitude:
-
         try:
-
             jarak_selisih = calculate_distance(
                 master_lat,
                 master_lon,
                 float(latitude),
                 float(longitude)
             )
-
         except:
-
             jarak_selisih = ""
 
 else:
-
     id_toko = ""
-
     nama_toko = ""
     alamat = ""
     distrik = ""
     dist1 = ""
     dist2 = ""
     dist3 = ""
-
     master_lat = 0
     master_lon = 0
-
     koordinat_toko = ""
-
     jarak_selisih = ""
-
 
 
 # =====================================
 # AUTO FILL
 # =====================================
-st.text_input(
-    "Nama Toko",
-    value=nama_toko,
-    disabled=True
-)
-
-st.text_input(
-    "Alamat Toko",
-    value=alamat,
-    disabled=True
-)
-
-st.text_input(
-    "Distrik Toko",
-    value=distrik,
-    disabled=True
-)
-
-st.text_input(
-    "Nama Distributor 1",
-    value=dist1,
-    disabled=True
-)
-
-st.text_input(
-    "Nama Distributor 2",
-    value=dist2,
-    disabled=True
-)
-
-st.text_input(
-    "Nama Distributor 3",
-    value=dist3,
-    disabled=True
-)
-
-st.text_input(
-    "Koordinat Toko",
-    value=koordinat_toko,
-    disabled=True
-)
-
-
+st.text_input("Nama Toko", value=nama_toko, disabled=True)
+st.text_input("Alamat Toko", value=alamat, disabled=True)
+st.text_input("Distrik Toko", value=distrik, disabled=True)
+st.text_input("Nama Distributor 1", value=dist1, disabled=True)
+st.text_input("Nama Distributor 2", value=dist2, disabled=True)
+st.text_input("Nama Distributor 3", value=dist3, disabled=True)
+st.text_input("Koordinat Toko", value=koordinat_toko, disabled=True)
 
 
 # =====================================
@@ -510,9 +438,7 @@ tanggal = st.date_input(
     value=date.today()
 )
 
-st.info(
-    "Gunakan kamera HP langsung saat mengambil foto Kunjungan."
-)
+st.info("Gunakan kamera HP langsung saat mengambil foto Kunjungan.")
 
 bukti = st.file_uploader(
     "Ambil Foto Kunjungan",
@@ -520,6 +446,7 @@ bukti = st.file_uploader(
     key=f"bukti_{st.session_state.form_key}",
     accept_multiple_files=False
 )
+
 
 # =====================================
 # SHARE OF WALLET / INFO PESAING
@@ -610,6 +537,7 @@ total_sow = (
 
 st.caption(f"Total SOW: {total_sow:.0f}%")
 
+
 # =====================================
 # SHOW GEOLOCATION
 # =====================================
@@ -625,82 +553,55 @@ st.text_input(
 # =====================================
 if st.button("Submit"):
 
-    # VALIDATION
     if id_toko == "":
-
         st.error("Silakan pilih ID Toko.")
 
     elif tso == "":
-
         st.error("Nama Salesman wajib diisi.")
 
     elif bukti is None:
-
         st.error("Bukti Kunjungan wajib diupload.")
 
     elif total_sow > 100:
-
         st.error("Total SOW tidak boleh lebih dari 100%.")
 
     else:
-
-        # =====================================
-        # CHECK EXIF
-        # =====================================
         exif = get_exif_data(bukti)
 
         if exif is None:
-
             st.error(
                 "Foto tidak memiliki metadata EXIF. "
                 "Gunakan kamera HP langsung."
             )
-
             st.stop()
 
-        # =====================================
-        # CHECK PHOTO TIME
-        # =====================================
         photo_time = exif.get("DateTime")
 
         if photo_time:
-
             try:
-
                 photo_datetime = datetime.strptime(
                     photo_time,
                     "%Y:%m:%d %H:%M:%S"
                 )
 
                 now = datetime.now()
-
-                diff_minutes = (
-                    now - photo_datetime
-                ).total_seconds() / 60
+                diff_minutes = (now - photo_datetime).total_seconds() / 60
 
                 if diff_minutes > 10:
-
                     st.error(
                         "Foto terlalu lama. "
                         "Ambil foto maksimal 10 menit terakhir."
                     )
-
                     st.stop()
 
             except:
                 pass
 
-        # =====================================
-        # SAVE PROCESS
-        # =====================================
         with st.spinner("Menyimpan data..."):
 
             try:
-
-                # UPLOAD FILE
                 link_file = upload_to_cloudinary(bukti)
 
-                # SAVE GOOGLE SHEET
                 sheet_hasil.append_row([
                     str(id_toko),
                     str(nama_toko),
@@ -728,9 +629,7 @@ if st.button("Submit"):
                     str(sow_pesaing_5)
                 ])
 
-                # SUCCESS
                 success_dialog()
 
             except Exception as e:
-
                 st.error(f"Terjadi error: {e}")
