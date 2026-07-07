@@ -310,7 +310,7 @@ with col_title:
     """, unsafe_allow_html=True)
 
 with col_logo_right:
-    st.image("assets/smbr.png", width=110)
+    st.image("assets/smbr.jpg", width=110)
 
 st.divider()
 
