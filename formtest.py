@@ -47,7 +47,7 @@ st.markdown("""
 <style>
 
 .stApp {
-    background: #f3f4f6;
+    background: #f3f4f6 !important;
 }
 
 .block-container {
@@ -140,6 +140,7 @@ label {
 .stTextArea textarea {
     background-color: white !important;
     color: #111827 !important;
+    -webkit-text-fill-color: #111827 !important;
     border: 1px solid #d1d5db !important;
     border-radius: 10px !important;
 }
@@ -152,16 +153,78 @@ label {
     border: 1px solid #cbd5e1 !important;
 }
 
+.stDateInput input {
+    background-color: white !important;
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827 !important;
+    border-radius: 10px !important;
+}
+
+/* SELECTBOX */
 .stSelectbox div[data-baseweb="select"] {
     background-color: white !important;
     color: #111827 !important;
     border-radius: 10px !important;
 }
 
-.stDateInput input {
-    background-color: white !important;
+.stSelectbox div[data-baseweb="select"] * {
     color: #111827 !important;
-    border-radius: 10px !important;
+    -webkit-text-fill-color: #111827 !important;
+}
+
+[data-baseweb="select"] {
+    background: #ffffff !important;
+    color: #111827 !important;
+}
+
+[data-baseweb="select"] * {
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827 !important;
+}
+
+[data-baseweb="input"] {
+    background: #ffffff !important;
+}
+
+[data-baseweb="input"] input {
+    background: #ffffff !important;
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827 !important;
+}
+
+[data-baseweb="popover"] {
+    background: #ffffff !important;
+}
+
+[data-baseweb="menu"] {
+    background: #ffffff !important;
+}
+
+[data-baseweb="menu"] * {
+    background: #ffffff !important;
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827 !important;
+}
+
+div[role="listbox"] {
+    background-color: #ffffff !important;
+}
+
+div[role="listbox"] * {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827 !important;
+}
+
+div[role="option"] {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+}
+
+div[role="option"]:hover,
+div[role="option"][aria-selected="true"] {
+    background-color: #e8f5e9 !important;
+    color: #064e3b !important;
 }
 
 /* PLACEHOLDER */
@@ -206,101 +269,10 @@ textarea::placeholder {
     color: white !important;
 }
 
-
-/* ===========================
-   SELECTBOX DROPDOWN
-=========================== */
-
-/* Kotak input */
-.stSelectbox div[data-baseweb="select"] {
-    background: white !important;
-    color: #111827 !important;
-}
-
-/* Dropdown menu */
-div[data-baseweb="popover"] {
-    background: white !important;
-}
-
-div[data-baseweb="popover"] * {
-    color: #111827 !important;
-}
-
-/* List item */
-li {
-    background: white !important;
-    color: #111827 !important;
-}
-
-/* Hover */
-li:hover {
-    background: #e8f5e9 !important;
-    color: #064e3b !important;
-}
-
-/* Item yang dipilih */
-div[aria-selected="true"] {
-    background: #c8e6c9 !important;
-    color: #064e3b !important;
-}
-
-/* Input pencarian */
-input {
-    color: #111827 !important;
-}
-
-/* Selectbox value text */
-.stSelectbox [data-baseweb="select"] span {
-    color: #111827 !important;
-}
-
-/* Dropdown option text */
-div[role="listbox"] div {
-    color: #111827 !important;
-    background-color: #ffffff !important;
-}
-
-/* Selected/highlighted option */
-div[role="option"]:hover,
-div[role="option"][aria-selected="true"] {
-    background-color: #e8f5e9 !important;
-    color: #064e3b !important;
-}
-
-</style>
-/* Selectbox utama */
-[data-baseweb="select"]{
-    background:#ffffff !important;
-    color:#111827 !important;
-}
-
-/* Input search */
-[data-baseweb="input"]{
-    background:#ffffff !important;
-}
-
-[data-baseweb="input"] input{
-    background:#ffffff !important;
-    color:#111827 !important;
-    -webkit-text-fill-color:#111827 !important;
-}
-
-/* Dropdown */
-[data-baseweb="popover"]{
-    background:#ffffff !important;
-}
-
-[data-baseweb="menu"]{
-    background:#ffffff !important;
-}
-
-[data-baseweb="menu"] *{
-    background:#ffffff !important;
-    color:#111827 !important;
-}
-
 </style>
 """, unsafe_allow_html=True)
+
+
 # =====================================
 # GOOGLE SHEET MASTER DATA
 # =====================================
