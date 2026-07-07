@@ -354,7 +354,7 @@ with col2:
     st.markdown("""
     <h1 class="header-title">FORM KUNJUNGAN SALESMAN</h1>
     <div class="header-subtitle">
-        Sistem Monitoring Kunjungan Toko - PT Semen Baturaja Tbk
+        Sistem Monitoring Kunjungan Toko - AP2
     </div>
     """, unsafe_allow_html=True)
 
