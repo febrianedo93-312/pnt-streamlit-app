@@ -241,6 +241,36 @@ textarea::placeholder {
     border: 1px dashed #94a3b8;
     padding: 1rem;
 }
+/* ============================
+   FILE UPLOADER
+============================ */
+
+/* Tombol Upload */
+[data-testid="stFileUploader"] button {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: 1px solid #cbd5e1 !important;
+    font-weight: 600 !important;
+}
+
+/* Tulisan di tombol */
+[data-testid="stFileUploader"] button * {
+    color: #111827 !important;
+    fill: #111827 !important;
+}
+
+/* Ikon upload */
+[data-testid="stFileUploader"] svg {
+    fill: #111827 !important;
+    color: #111827 !important;
+}
+
+/* Teks "200MB per file..." */
+[data-testid="stFileUploader"] small,
+[data-testid="stFileUploader"] span,
+[data-testid="stFileUploader"] div {
+    color: #4b5563 !important;
+}
 
 /* ALERT TEXT */
 .stAlert p {
