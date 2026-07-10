@@ -241,36 +241,6 @@ textarea::placeholder {
     border: 1px dashed #94a3b8;
     padding: 1rem;
 }
-/* ============================
-   FILE UPLOADER
-============================ */
-
-/* Tombol Upload */
-[data-testid="stFileUploader"] button {
-    background: #ffffff !important;
-    color: #111827 !important;
-    border: 1px solid #cbd5e1 !important;
-    font-weight: 600 !important;
-}
-
-/* Tulisan di tombol */
-[data-testid="stFileUploader"] button * {
-    color: #111827 !important;
-    fill: #111827 !important;
-}
-
-/* Ikon upload */
-[data-testid="stFileUploader"] svg {
-    fill: #111827 !important;
-    color: #111827 !important;
-}
-
-/* Teks "200MB per file..." */
-[data-testid="stFileUploader"] small,
-[data-testid="stFileUploader"] span,
-[data-testid="stFileUploader"] div {
-    color: #4b5563 !important;
-}
 
 /* ALERT TEXT */
 .stAlert p {
@@ -298,79 +268,31 @@ textarea::placeholder {
     background: #00695C;
     color: white !important;
 }
-/* HEADER MOBILE FRIENDLY */
-.header-mobile {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    padding: 18px;
-    margin-bottom: 22px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
-
-.header-row {
-    display: grid;
-    grid-template-columns: 80px 1fr 80px;
-    align-items: center;
-    gap: 10px;
-}
-
-.header-logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.header-logo img {
-    max-width: 70px;
-    height: auto;
-}
-
-.header-title-mobile {
-    text-align: center;
+/* Tombol Upload */
+[data-testid="stFileUploader"] button {
+    background: #ffffff !important;
     color: #111827 !important;
-    font-size: 28px;
-    font-weight: 900;
-    line-height: 1.15;
-    margin: 0;
+    border: 1px solid #cbd5e1 !important;
+    font-weight: 600 !important;
 }
 
-.header-subtitle-mobile {
-    text-align: center;
-    color: #374151 !important;
-    font-size: 14px;
-    margin-top: 8px;
+/* Tulisan di tombol */
+[data-testid="stFileUploader"] button * {
+    color: #111827 !important;
+    fill: #111827 !important;
 }
 
-/* KHUSUS HP */
-@media (max-width: 600px) {
-    .block-container {
-        padding: 1rem !important;
-        border-radius: 0 !important;
-    }
+/* Ikon upload */
+[data-testid="stFileUploader"] svg {
+    fill: #111827 !important;
+    color: #111827 !important;
+}
 
-    .header-mobile {
-        padding: 14px 10px;
-        margin-top: 0;
-    }
-
-    .header-row {
-        grid-template-columns: 55px 1fr 55px;
-        gap: 6px;
-    }
-
-    .header-logo img {
-        max-width: 48px;
-    }
-
-    .header-title-mobile {
-        font-size: 22px;
-        line-height: 1.2;
-    }
-
-    .header-subtitle-mobile {
-        font-size: 12px;
-    }
+/* Teks "200MB per file..." */
+[data-testid="stFileUploader"] small,
+[data-testid="stFileUploader"] span,
+[data-testid="stFileUploader"] div {
+    color: #4b5563 !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -504,37 +426,35 @@ def success_dialog():
 # =====================================
 # HEADER
 # =====================================
-import base64
+st.markdown('<div class="header-card">', unsafe_allow_html=True)
 
-def image_to_base64(path):
-    with open(path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
+col1, col2, col3 = st.columns([1.1, 4, 1.1])
 
-sig_base64 = image_to_base64(SIG_LOGO) if SIG_LOGO.exists() else ""
-smbr_base64 = image_to_base64(SMBR_LOGO) if SMBR_LOGO.exists() else ""
+with col1:
+    st.markdown('<div class="logo-box">', unsafe_allow_html=True)
+    if SIG_LOGO.exists():
+        st.image(str(SIG_LOGO), width=95)
+    else:
+        st.warning("Logo SIG tidak ditemukan")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown(f"""
-<div class="header-mobile">
-    <div class="header-row">
-        <div class="header-logo">
-            <img src="data:image/png;base64,{sig_base64}">
-        </div>
-
-        <div>
-            <h1 class="header-title-mobile">
-                FORM KUNJUNGAN<br>SALESMAN
-            </h1>
-            <div class="header-subtitle-mobile">
-                Sistem Monitoring Kunjungan Toko - AP2
-            </div>
-        </div>
-
-        <div class="header-logo">
-            <img src="data:image/jpeg;base64,{smbr_base64}">
-        </div>
+with col2:
+    st.markdown("""
+    <h1 class="header-title">FORM KUNJUNGAN SALESMAN</h1>
+    <div class="header-subtitle">
+        Sistem Monitoring Kunjungan Toko - AP2
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown('<div class="logo-box">', unsafe_allow_html=True)
+    if SMBR_LOGO.exists():
+        st.image(str(SMBR_LOGO), width=95)
+    else:
+        st.warning("Logo SMBR tidak ditemukan")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 
 # =====================================
